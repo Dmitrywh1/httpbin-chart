@@ -1,0 +1,25 @@
+stages:
+  - deploy
+
+default:
+  tags:
+    - docker
+
+variables:
+  ENVIRONMENT: dev
+
+.prepare_helm_work:
+  image:
+    name: alpine/helm
+    entrypoint: [""]
+
+deploy_helm:
+  stage: deploy
+  extends: .prepare_helm_work
+  script:
+    - helm upgrade $CI_PROJECT_NAME .
+      --debug
+      --install
+      --atomic
+      --values values.yaml
+      --namespace $ENVIRONMENT
